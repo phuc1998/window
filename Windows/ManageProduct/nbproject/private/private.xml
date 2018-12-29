@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/MainFrame.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Payment.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IRepository.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxDiscountModel.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/dao/HibernateUtil.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Phone.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Account.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Inventory.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxPaymentModel.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxCategoryModel.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IDashBoard.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Discount.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/dao/DatabaseAPI.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/pdf/PDFPrint.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataModelDashBoard.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Category.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataModelRepository.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/common/BILLID.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/hibernate.cfg.xml</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/common/CommonFunction.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Bill.java</file>
+        </group>
+    </open-files>
+</project-private>
