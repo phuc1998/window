@@ -5,8 +5,7 @@
  */
 package datamodel;
 
-import entities.Category;
-import entities.Discount;
+import entities.Payment;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 
@@ -14,10 +13,10 @@ import javax.swing.DefaultComboBoxModel;
  *
  * @author PHUC
  */
-public class DataComboBoxDiscountModel extends DefaultComboBoxModel{
-    private List<Discount> list;
+public class DataComboBoxStringModel extends DefaultComboBoxModel{
+    private List<String> list;
 
-    public DataComboBoxDiscountModel(List<Discount> list) {
+    public DataComboBoxStringModel(List<String> list) {
         this.list = list;
     }
     
@@ -30,6 +29,6 @@ public class DataComboBoxDiscountModel extends DefaultComboBoxModel{
     
     @Override
     public Object getElementAt(int index) {
-        return list.get(index).getPercentDiscount() + "%";
+        return list.get(index);
     }
 }

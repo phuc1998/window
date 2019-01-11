@@ -42,7 +42,7 @@ Contributor(s):
 <hibernate-configuration>
   <session-factory>
     <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-    <property name="hibernate.connection.url">jdbc:sqlserver://127.0.0.1\default:50056;databaseName=WINDOWS</property>
+    <property name="hibernate.connection.url">jdbc:sqlserver://127.0.0.1\default:50056;databaseName=WINDOWS</property><!-- -->
     <!--jdbc:mysql://localhost:3306/windows?createDatabaseIfNotExist=true-->
     <property name="hibernate.connection.username">sa</property>
     <property name="hibernate.connection.password">Phuc1998</property>
@@ -57,7 +57,7 @@ Contributor(s):
         <property name="javax.persistence.schema-generation.create-script-source">database/init.sql</property>-->
     <!--    <property name="javax.persistence.schema-generation.scripts.action">create</property>
         <property name="javax.persistence.schema-generation.scripts.create-target">./database/init.sql</property>-->
-    <property name="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</property>
+    <property name="hibernate.dialect">org.hibernate.dialect.SQLServer2012Dialect</property>
     <mapping class="entities.Category"/>
     <mapping class="entities.Bill"/>
     <mapping class="entities.Account"/>

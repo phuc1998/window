@@ -14,6 +14,8 @@ import javafx.scene.control.SelectionMode;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -22,27 +24,35 @@ import javax.swing.table.AbstractTableModel;
  */
 public class IRepository extends javax.swing.JInternalFrame {
 
+    private int page = 0;
+
     /**
      * Creates new form IRepository
      */
     public IRepository() {
         initComponents();
         init();
-        loadData();
+        loadData(page);
     }
 
     private List<Inventory> inventory = new ArrayList<>();
     private AbstractTableModel model;
 
-    private void init(){
+    private void init() {
         this.tblRepository.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.btnEdit.setEnabled(false);
+        this.btnOld.setEnabled(false);
+        SpinnerModel model = new SpinnerNumberModel(1, 1, 100, 1);
+        this.txtPage.setModel(model);
+        this.getRootPane().setDefaultButton(this.btnSearch);
     }
-    
-    public void loadData() {
-        inventory = DatabaseAPI.getListRepository();
+
+    public void loadData(int page) {
+        inventory = DatabaseAPI.getListRepository(page, 50);
         this.model = new DataModelRepository(inventory);
         this.tblRepository.setModel(model);
-        
+        this.btnEdit.setEnabled(false);
+        this.btnOld.setEnabled(false);
     }
 
     /**
@@ -60,6 +70,9 @@ public class IRepository extends javax.swing.JInternalFrame {
         btnSearch = new javax.swing.JButton();
         btnNew = new javax.swing.JButton();
         btnOld = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        txtPage = new javax.swing.JSpinner();
 
         tblRepository.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         tblRepository.setModel(new javax.swing.table.DefaultTableModel(
@@ -73,6 +86,11 @@ public class IRepository extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblRepository.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblRepositoryMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblRepository);
 
         txtSearch.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
@@ -104,6 +122,25 @@ public class IRepository extends javax.swing.JInternalFrame {
             }
         });
 
+        btnEdit.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btnEdit.setText("Chỉnh sửa");
+        btnEdit.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel1.setText("Trang");
+
+        txtPage.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        txtPage.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                txtPageStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -111,10 +148,16 @@ public class IRepository extends javax.swing.JInternalFrame {
             .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnNew)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnOld)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 272, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                 .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSearch)
@@ -128,9 +171,12 @@ public class IRepository extends javax.swing.JInternalFrame {
                     .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSearch)
                     .addComponent(btnNew)
-                    .addComponent(btnOld))
+                    .addComponent(btnOld)
+                    .addComponent(btnEdit)
+                    .addComponent(jLabel1)
+                    .addComponent(txtPage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE))
         );
 
         pack();
@@ -139,15 +185,18 @@ public class IRepository extends javax.swing.JInternalFrame {
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         // TODO add your handling code here:
         String search = txtSearch.getText();
-        if(!search.equals("")){
-            inventory = DatabaseAPI.searchRepository(search);
+        if (!search.equals("")) {
+            inventory.clear();
+            inventory.addAll(DatabaseAPI.searchRepository(search));
             this.model.fireTableDataChanged();
+            this.btnEdit.setEnabled(false);
+            this.btnOld.setEnabled(false);
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         // TODO add your handling code here:
-        DNewImport dNewImport = new DNewImport(null, true, this);
+        DNewImport dNewImport = new DNewImport(null, true, this, page);
         dNewImport.setResizable(false);
         dNewImport.setTitle("Nhập hàng mới");
         dNewImport.setLocationRelativeTo(this);
@@ -157,23 +206,54 @@ public class IRepository extends javax.swing.JInternalFrame {
     private void btnOldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOldActionPerformed
         // TODO add your handling code here:
         int selectedIndex = this.tblRepository.getSelectedRow();
-        if(selectedIndex >= 0){
+        if (selectedIndex >= 0) {
             Inventory i = this.inventory.get(selectedIndex);
-            DExtraImport dExtraImport = new DExtraImport(null, true, this, i);
+            DExtraImport dExtraImport = new DExtraImport(null, true, this, i, page);
             dExtraImport.setLocationRelativeTo(this);
             dExtraImport.setVisible(true);
-        }else{
+        } else {
             JOptionPane.showMessageDialog(this, "Chưa chọn sản phẩm để nhập thêm!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnOldActionPerformed
 
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        // TODO add your handling code here:
+        int selectedIndex = this.tblRepository.getSelectedRow();
+        if (selectedIndex >= 0) {
+            Inventory i = this.inventory.get(selectedIndex);
+            DEditRepository dEditRepository = new DEditRepository(null, true, this, i, page);
+            dEditRepository.setLocationRelativeTo(this);
+            dEditRepository.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Chưa chọn sản phẩm để sửa!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void tblRepositoryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblRepositoryMouseClicked
+        // TODO add your handling code here:
+        this.btnEdit.setEnabled(true);
+        this.btnOld.setEnabled(true);
+    }//GEN-LAST:event_tblRepositoryMouseClicked
+
+    private void txtPageStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtPageStateChanged
+        // TODO add your handling code here:
+        try {
+            page = (int) this.txtPage.getValue() - 1;
+            loadData(page);
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_txtPageStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnNew;
     private javax.swing.JButton btnOld;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblRepository;
+    private javax.swing.JSpinner txtPage;
     private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,25 +5,46 @@
         <group>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/MainFrame.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Payment.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/charts/ChartBestSell.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DExtraImport.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IRepository.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxDiscountModel.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/dao/HibernateUtil.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Phone.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DNewImport.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DChooseOption.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IImport.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Account.java</file>
-            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Inventory.java</file>
-            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxPaymentModel.java</file>
-            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxCategoryModel.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DChangeStatus.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/report/ReportForm.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IDashBoard.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Discount.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataModelStatistic.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/dao/DatabaseAPI.java</file>
-            <file>file:/D:/CodeJava/Windows/ManageProduct/src/pdf/PDFPrint.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataModelDashBoard.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Category.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataModelRepository.java</file>
-            <file>file:/D:/CodeJava/Windows/ManageProduct/src/common/BILLID.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/charts/GenerateDataSet.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IReport.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/hibernate.cfg.xml</file>
-            <file>file:/D:/CodeJava/Windows/ManageProduct/src/common/CommonFunction.java</file>
             <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Bill.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/charts/ChartRevenue.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DImport.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DCategory.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DashBoard.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IDiscount.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxPaymentModel.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataComboBoxCategoryModel.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/entities/Inventory.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/IStatistic.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DEditRepository.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/hibernate.reveng.xml</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/pdf/PDFPrint.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/database/init.sql</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/common/BILLID.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/common/CommonFunction.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/datamodel/DataModelDiscount.java</file>
+            <file>file:/D:/CodeJava/Windows/ManageProduct/src/gui/DChooseOptionReport.java</file>
         </group>
     </open-files>
 </project-private>

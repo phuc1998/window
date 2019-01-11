@@ -5,6 +5,7 @@
  */
 package gui;
 
+import dao.DatabaseAPI;
 import excel.ExcelProcess;
 import java.io.File;
 import java.io.IOException;
@@ -147,37 +148,67 @@ public class DImport extends javax.swing.JDialog {
     private void btnCategoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoryActionPerformed
         // TODO add your handling code here:
         type = CATEGORY;
-        process();
+        boolean ok = process();
+        if(ok){
+            JOptionPane.showMessageDialog(this, "Import thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnCategoryActionPerformed
 
     private void btnPhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPhoneActionPerformed
         // TODO add your handling code here:
         type = PHONE;
-        process();
+        boolean ok = process();
+        if(ok){
+            JOptionPane.showMessageDialog(this, "Import thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnPhoneActionPerformed
 
     private void btnInventoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInventoryActionPerformed
         // TODO add your handling code here:
         type = INVENTORY;
-        process();
+        boolean ok = process();
+        if(ok){
+            JOptionPane.showMessageDialog(this, "Import thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnInventoryActionPerformed
 
     private void btnPaymentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPaymentActionPerformed
         // TODO add your handling code here:
         type = PAYMENT;
-        process();
+        boolean ok = process();
+        if(ok){
+            JOptionPane.showMessageDialog(this, "Import thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnPaymentActionPerformed
 
     private void btnDiscountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountActionPerformed
         // TODO add your handling code here:
         type = DISCOUNT;
-        process();
+        boolean ok = process();
+        if(ok){
+            JOptionPane.showMessageDialog(this, "Import thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnDiscountActionPerformed
 
     private void btnBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBillActionPerformed
         // TODO add your handling code here:
         type = BILL;
-        process();
+        boolean ok = process();
+        if(ok){
+            JOptionPane.showMessageDialog(this, "Import thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+        }else{
+            JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnBillActionPerformed
 
     private boolean process() {
@@ -189,7 +220,31 @@ public class DImport extends javax.swing.JDialog {
             File selectedFile = fileChooser.getSelectedFile();
             ExcelProcess process = new ExcelProcess(selectedFile);
             try {
-                List list = process.readDiscount(0);
+
+                List list = null;//process.readDiscount(0);
+                switch (type) {
+                    case INVENTORY:
+                        list = process.readInventory(0);
+                        return DatabaseAPI.insertMultipleInventory(list);
+                    case PHONE:
+                        list = process.readPhone(0);
+                        return DatabaseAPI.insertMultiplePhone(list);
+                    case PAYMENT:
+                        list = process.readPayment(0);
+                        return DatabaseAPI.insertMultiplePayment(list);
+                    case DISCOUNT:
+                        list = process.readDiscount(0);
+                        return DatabaseAPI.insertMultipleDiscount(list);
+                    case BILL:
+                        list = process.readBill(0);
+                        return DatabaseAPI.insertMultipleBill(list);
+                    case CATEGORY:
+                        list = process.readCategory(0);
+                        return DatabaseAPI.insertMultipleCategory(list);
+                    default:
+                        return false;
+                }
+                
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Import thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
             } catch (ParseException ex) {

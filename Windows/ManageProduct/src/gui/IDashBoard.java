@@ -12,10 +12,12 @@ import dao.DatabaseAPI;
 import datamodel.DataComboBoxCategoryModel;
 import datamodel.DataComboBoxDiscountModel;
 import datamodel.DataComboBoxPaymentModel;
+import datamodel.DataComboBoxStringModel;
 import datamodel.DataModelDashBoard;
 import entities.Bill;
 import entities.Category;
 import entities.Discount;
+import entities.Inventory;
 import entities.Payment;
 import entities.Phone;
 import excel.ExcelProcess;
@@ -23,13 +25,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import pdf.PDFPrint;
@@ -38,7 +46,7 @@ import pdf.PDFPrint;
  *
  * @author PHUC
  */
-public class IDashBoard extends javax.swing.JInternalFrame{
+public class IDashBoard extends javax.swing.JInternalFrame {
 
     private Bill bill = new Bill();
     private List<Category> listCategories = new ArrayList<>();
@@ -49,38 +57,57 @@ public class IDashBoard extends javax.swing.JInternalFrame{
     private DataModelDashBoard dashBoardModel;
     private DataComboBoxPaymentModel paymentModel;
     private DataComboBoxDiscountModel discountModel;
+    private DataComboBoxStringModel statusModel;
+    private List<String> status;
+    private int page = 0;
+
     /**
      * Creates new form IDashBoard
      */
     public IDashBoard() {
         initComponents();
         init();
-        loadData();
+        loadData(page);
     }
-    
+
     private void init() {
         this.tblPhone.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.jPanel2.setVisible(false);
+        this.btnHoanThanh.setEnabled(false);
+        this.txtSL.setValue(1);
+        SpinnerModel model = new SpinnerNumberModel(1, 1, 100, 1);
+        this.txtSL.setModel(model);
+        this.status = new ArrayList<String>();
+        this.status.add("ĐÃ THANH TOÁN");
+        this.status.add("CHƯA THANH TOÁN");
+        this.statusModel = new DataComboBoxStringModel(status);
+        this.cbbTT.setModel(statusModel);
+        SpinnerModel modelPage = new SpinnerNumberModel(1, 1, 100, 1);
+        this.txtPage.setModel(modelPage);
+        this.getRootPane().setDefaultButton(this.btnSearch);
     }
-    
-    public void loadData(){
+
+    public void loadData(int page) {
         listCategories = DatabaseAPI.getListCategory();
-        listPhones = DatabaseAPI.getListPhone();
+        listPhones = DatabaseAPI.getListPhone(page, 50);
         listPayments = DatabaseAPI.getListPayments();
-        listDiscounts = DatabaseAPI.getListDiscounts();
+        listDiscounts = DatabaseAPI.getListDiscountsValid(Calendar.getInstance().getTime());//DatabaseAPI.getListDiscounts(0, 50);
         this.categoryModel = new DataComboBoxCategoryModel(listCategories);
         this.cbbCategory.setModel(categoryModel);
         this.paymentModel = new DataComboBoxPaymentModel(listPayments);
         this.discountModel = new DataComboBoxDiscountModel(listDiscounts);
         this.cbbThanhToan.setModel(paymentModel);
         this.cbbUuDai.setModel(discountModel);
+        if(this.listDiscounts.size() != 0)
+            this.cbbUuDai.setSelectedIndex(0);
         this.dashBoardModel = new DataModelDashBoard(listPhones);
         this.tblPhone.setModel(dashBoardModel);
         this.dashBoardModel.fireTableDataChanged();
         String billID = CommonFunction.currentTimeDateFormat();
         bill.setId(billID);
+        this.cbbTT.setSelectedIndex(0);
+        this.cbbThanhToan.setSelectedIndex(0);
     }
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -94,12 +121,13 @@ public class IDashBoard extends javax.swing.JInternalFrame{
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblPhone = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
         cbbCategory = new javax.swing.JComboBox<>();
-        jTextField1 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
         btnShowBill = new javax.swing.JButton();
+        jLabel14 = new javax.swing.JLabel();
+        txtPage = new javax.swing.JSpinner();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -118,7 +146,6 @@ public class IDashBoard extends javax.swing.JInternalFrame{
         cbbThanhToan = new javax.swing.JComboBox<>();
         jLabel13 = new javax.swing.JLabel();
         cbbUuDai = new javax.swing.JComboBox<>();
-        txtTrangThai = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtGhiChu = new javax.swing.JTextArea();
         lblTongTien = new javax.swing.JLabel();
@@ -128,12 +155,11 @@ public class IDashBoard extends javax.swing.JInternalFrame{
         txtHangSX = new javax.swing.JLabel();
         txtNgayBan = new javax.swing.JLabel();
         txtPrice = new javax.swing.JLabel();
+        cbbTT = new javax.swing.JComboBox<>();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        tblPhone.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        tblPhone.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         tblPhone.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -152,30 +178,51 @@ public class IDashBoard extends javax.swing.JInternalFrame{
         });
         jScrollPane1.setViewportView(tblPhone);
 
-        jButton1.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        jButton1.setText("Thêm Loại");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btnAdd.setText("Thêm Loại");
+        btnAdd.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
-        jButton2.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        jButton2.setText("Chỉnh sửa");
-        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-
-        cbbCategory.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        cbbCategory.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         cbbCategory.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbbCategory.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cbbCategory.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbbCategoryItemStateChanged(evt);
+            }
+        });
 
-        jTextField1.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        txtSearch.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
 
-        jButton3.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
-        jButton3.setText("Tìm kiếm");
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btnSearch.setText("Tìm kiếm");
+        btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
-        btnShowBill.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        btnShowBill.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         btnShowBill.setText("Hiện hóa đơn");
         btnShowBill.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         btnShowBill.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnShowBillActionPerformed(evt);
+            }
+        });
+
+        jLabel14.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel14.setText("Trang");
+
+        txtPage.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        txtPage.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                txtPageStateChanged(evt);
             }
         });
 
@@ -185,33 +232,36 @@ public class IDashBoard extends javax.swing.JInternalFrame{
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jButton2)
-                .addGap(18, 18, 18)
+                .addComponent(jLabel14)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnAdd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnShowBill)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 148, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnSearch)
                 .addContainerGap())
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 894, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
+                    .addComponent(btnAdd)
                     .addComponent(btnShowBill)
-                    .addComponent(cbbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE))
+                    .addComponent(cbbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch)
+                    .addComponent(jLabel14)
+                    .addComponent(txtPage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -264,6 +314,12 @@ public class IDashBoard extends javax.swing.JInternalFrame{
         });
 
         txtSL.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        txtSL.setInheritsPopupMenu(true);
+        txtSL.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                txtSLStateChanged(evt);
+            }
+        });
 
         cbbThanhToan.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         cbbThanhToan.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -273,8 +329,11 @@ public class IDashBoard extends javax.swing.JInternalFrame{
 
         cbbUuDai.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
         cbbUuDai.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        txtTrangThai.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        cbbUuDai.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbbUuDaiItemStateChanged(evt);
+            }
+        });
 
         txtGhiChu.setColumns(20);
         txtGhiChu.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
@@ -296,6 +355,9 @@ public class IDashBoard extends javax.swing.JInternalFrame{
 
         txtPrice.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
 
+        cbbTT.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        cbbTT.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -316,36 +378,30 @@ public class IDashBoard extends javax.swing.JInternalFrame{
                     .addComponent(jLabel10)
                     .addComponent(jLabel12))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(cbbThanhToan, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbbUuDai, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtIDHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtIDSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtTenSP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtHangSX, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtNgayBan, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtPrice, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtSL)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbbThanhToan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cbbUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(txtIDHoaDon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtIDSanPham, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtTenSP, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtHangSX, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtNgayBan, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtPrice, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtSL, javax.swing.GroupLayout.Alignment.LEADING)))
-                        .addContainerGap(69, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(lblTongTien)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel11)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(18, 18, 18)
+                        .addComponent(lblTongTien))
+                    .addComponent(cbbTT, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(69, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnHoanThanh)
                 .addGap(37, 37, 37))
         );
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cbbThanhToan, cbbUuDai, jScrollPane2, txtSL, txtTrangThai});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cbbThanhToan, cbbUuDai, jScrollPane2, txtSL});
 
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -387,7 +443,7 @@ public class IDashBoard extends javax.swing.JInternalFrame{
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(txtTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbbTT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
@@ -396,16 +452,16 @@ public class IDashBoard extends javax.swing.JInternalFrame{
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(lblTongTien)
-                .addGap(4, 4, 4)
-                .addComponent(jLabel11)
+                .addGap(38, 38, 38)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(lblTongTien))
                 .addGap(18, 18, 18)
                 .addComponent(btnHoanThanh)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
-        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cbbThanhToan, cbbUuDai, txtSL, txtTrangThai});
+        jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cbbThanhToan, cbbUuDai, txtSL});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -427,19 +483,76 @@ public class IDashBoard extends javax.swing.JInternalFrame{
 
     private void btnHoanThanhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHoanThanhActionPerformed
         // TODO add your handling code here:
+        boolean ok = processBill();
+        if (!ok) {
+            JOptionPane.showMessageDialog(this, "Lưu Bill thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else {
+            JOptionPane.showMessageDialog(this, "Lưu Bill thành công!", "Infomation", JOptionPane.INFORMATION_MESSAGE);
+        }
         JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int returnValue = fileChooser.showSaveDialog(null);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            try{
+            try {
                 File selectedFile = fileChooser.getSelectedFile();
                 PDFPrint.generatePDF(this.jPanel2, selectedFile, bill.getId());
-            }catch(Exception e){
+                String billID = CommonFunction.currentTimeDateFormat();
+                this.bill.setId(billID);
+                this.txtIDHoaDon.setText(this.bill.getId());
+            } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Mở file thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btnHoanThanhActionPerformed
+
+    private boolean processBill() {
+        try {
+            int phoneSelected = this.tblPhone.getSelectedRow();
+            Phone phone = this.listPhones.get(phoneSelected);
+            boolean check = checkInventory(phone);
+            if(check == false){
+                JOptionPane.showMessageDialog(this, "Hiện kho đã hết sản phẩm này!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return false;
+            }
+            int paymentSelected = this.cbbThanhToan.getSelectedIndex();
+            int discountSelected = this.cbbUuDai.getSelectedIndex();
+            Payment payment = paymentSelected != -1 ? this.listPayments.get(this.cbbThanhToan.getSelectedIndex()) : null;
+            Discount discount = discountSelected != -1 ? this.listDiscounts.get(this.cbbUuDai.getSelectedIndex()) : null;
+            int count = (int) this.txtSL.getValue();
+            bill.setCount(count);
+            bill.setPayment(payment);
+            bill.setPhone(phone);
+            bill.setStatus(this.cbbTT.getSelectedItem().toString());
+            bill.setDiscription(this.txtGhiChu.getText());
+            bill.setDiscount(discount);
+            String dateSell = CommonFunction.currentDateFormat();
+            Date date;
+            try {
+                date = (new SimpleDateFormat("dd-MM-yyyy")).parse(dateSell);
+            } catch (ParseException ex) {
+                return false;
+            }
+            bill.setDateSell(date);
+            return DatabaseAPI.saveOrUpdateBill(bill, phone.getInventories());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    
+    private boolean checkInventory(Phone phone){
+        boolean ok = false;
+        Set<Inventory> inventories = phone.getInventories();
+        for(Inventory in : inventories){
+            if(in != null && in.getCount() > 0){
+                ok = true;
+                break;
+            }
+        }
+        return ok;
+    }
 
     private void btnShowBillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShowBillActionPerformed
         // TODO add your handling code here:
@@ -450,34 +563,93 @@ public class IDashBoard extends javax.swing.JInternalFrame{
 
     private void tblPhoneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPhoneMouseClicked
         // TODO add your handling code here:
+        this.btnHoanThanh.setEnabled(true);
         String billID = CommonFunction.currentTimeDateFormat();
         String dateSell = CommonFunction.currentDateFormat();
         int index = this.tblPhone.getSelectedRow();
         Phone phone = listPhones.get(index);
         this.txtIDSanPham.setText(String.valueOf(phone.getId()));
         this.txtHangSX.setText(phone.getCategory().getManufacturer());
-        this.txtPrice.setText(phone.getPrice() + "Đ");
+        this.txtPrice.setText(CommonFunction.getCurrency(phone.getPrice()) + "Đ");
         this.txtTenSP.setText(phone.getName());
         this.txtIDHoaDon.setText(billID);
         this.txtNgayBan.setText(dateSell);
         this.bill.setId(billID);
+        int sum = phone.getPrice() * (int) this.txtSL.getValue() - phone.getPrice() * (int) this.txtSL.getValue() * (this.listDiscounts.get(this.cbbUuDai.getSelectedIndex()).getPercentDiscount() / 100);
+        this.lblTongTien.setText(CommonFunction.getCurrency(sum) + "Đ");
     }//GEN-LAST:event_tblPhoneMouseClicked
+
+    private void txtSLStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtSLStateChanged
+        // TODO add your handling code here:
+        try {
+            Phone phone = this.listPhones.get(this.tblPhone.getSelectedRow());
+            int sum = phone.getPrice() * (int) this.txtSL.getValue() - phone.getPrice() * (int) this.txtSL.getValue() * (this.listDiscounts.get(this.cbbUuDai.getSelectedIndex()).getPercentDiscount() / 100);
+            this.lblTongTien.setText(CommonFunction.getCurrency(sum) + "Đ");
+        } catch (Exception e) {
+            this.lblTongTien.setText("0Đ");
+        }
+
+    }//GEN-LAST:event_txtSLStateChanged
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        // TODO add your handling code here:
+
+        DCategory dCategory = new DCategory(this, null, true, page);
+        dCategory.setTitle("Thêm loại");
+        dCategory.setLocationRelativeTo(this);
+        dCategory.setVisible(true);
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void cbbCategoryItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbbCategoryItemStateChanged
+        // TODO add your handling code here:
+        Category category = this.listCategories.get(this.cbbCategory.getSelectedIndex());
+        listPhones.clear();
+        listPhones.addAll(DatabaseAPI.filterPhone(category));
+        this.dashBoardModel.fireTableDataChanged();
+    }//GEN-LAST:event_cbbCategoryItemStateChanged
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        // TODO add your handling code here:
+        String seach = this.txtSearch.getText();
+        if (!seach.equals("")) {
+            listPhones.clear();
+            listPhones.addAll(DatabaseAPI.searchPhone(seach));
+            this.dashBoardModel.fireTableDataChanged();
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void txtPageStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtPageStateChanged
+        // TODO add your handling code here:
+        try {
+            page = (int) this.txtPage.getValue() - 1;
+            loadData(page);
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_txtPageStateChanged
+
+    private void cbbUuDaiItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbbUuDaiItemStateChanged
+        // TODO add your handling code here:
+//        Phone phone = this.listPhones.get(this.tblPhone.getSelectedRow());
+//        int sum = phone.getPrice() * (int) this.txtSL.getValue() - phone.getPrice() * (int) this.txtSL.getValue() * (this.listDiscounts.get(this.cbbUuDai.getSelectedIndex()).getPercentDiscount() / 100);
+//        this.lblTongTien.setText(CommonFunction.getCurrency(sum) + "Đ");
+    }//GEN-LAST:event_cbbUuDaiItemStateChanged
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnHoanThanh;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnShowBill;
     private javax.swing.JComboBox<String> cbbCategory;
+    private javax.swing.JComboBox<String> cbbTT;
     private javax.swing.JComboBox<String> cbbThanhToan;
     private javax.swing.JComboBox<String> cbbUuDai;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -490,7 +662,6 @@ public class IDashBoard extends javax.swing.JInternalFrame{
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTongTien;
     private javax.swing.JTable tblPhone;
     private javax.swing.JTextArea txtGhiChu;
@@ -498,11 +669,11 @@ public class IDashBoard extends javax.swing.JInternalFrame{
     private javax.swing.JLabel txtIDHoaDon;
     private javax.swing.JLabel txtIDSanPham;
     private javax.swing.JLabel txtNgayBan;
+    private javax.swing.JSpinner txtPage;
     private javax.swing.JLabel txtPrice;
     private javax.swing.JSpinner txtSL;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JLabel txtTenSP;
-    private javax.swing.JTextField txtTrangThai;
     // End of variables declaration//GEN-END:variables
 
-    
 }

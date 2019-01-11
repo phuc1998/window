@@ -28,6 +28,8 @@ public class DashBoard extends javax.swing.JFrame {
     private static final int REPORT = 3;
     private static final int IMPORT = 4;
     private static final int LOGOUT = 5;
+    private static final int DISCOUNT = 6;
+
     /**
      * Creates new form DashBoard
      */
@@ -36,8 +38,8 @@ public class DashBoard extends javax.swing.JFrame {
         init();
         SwingUtilities.updateComponentTreeUI(this);
     }
-    
-    private void  init(){
+
+    private void init() {
         this.workPlace.setBounds(this.getBounds());
         this.listButton.add(this.btnDashboard);
         this.listButton.add(this.btnRepository);
@@ -45,6 +47,7 @@ public class DashBoard extends javax.swing.JFrame {
         this.listButton.add(this.btnReport);
         this.listButton.add(this.btnImport);
         this.listButton.add(this.btnLogout);
+        this.listButton.add(this.btnDiscount);
 //        this.jToolBar1.setBackground(Color.white);
 //        this.btnDashboard.setBackground(Color.white);
     }
@@ -65,8 +68,8 @@ public class DashBoard extends javax.swing.JFrame {
         btnStatistic = new javax.swing.JButton();
         btnReport = new javax.swing.JButton();
         btnImport = new javax.swing.JButton();
+        btnDiscount = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
-        btnThoat = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -170,6 +173,24 @@ public class DashBoard extends javax.swing.JFrame {
         });
         jToolBar1.add(btnImport);
 
+        btnDiscount.setBackground(new java.awt.Color(255, 255, 255));
+        btnDiscount.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
+        btnDiscount.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/discount.png"))); // NOI18N
+        btnDiscount.setText("Ưu đãi");
+        btnDiscount.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDiscount.setFocusable(false);
+        btnDiscount.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnDiscount.setMaximumSize(new java.awt.Dimension(97, 67));
+        btnDiscount.setMinimumSize(new java.awt.Dimension(97, 67));
+        btnDiscount.setPreferredSize(new java.awt.Dimension(97, 67));
+        btnDiscount.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDiscount.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDiscountActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnDiscount);
+
         btnLogout.setBackground(new java.awt.Color(255, 255, 255));
         btnLogout.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
         btnLogout.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/logout.png"))); // NOI18N
@@ -187,22 +208,6 @@ public class DashBoard extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnLogout);
-
-        btnThoat.setBackground(new java.awt.Color(255, 255, 255));
-        btnThoat.setFont(new java.awt.Font("Arial", 1, 14)); // NOI18N
-        btnThoat.setText("Thoát");
-        btnThoat.setFocusable(false);
-        btnThoat.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnThoat.setMaximumSize(new java.awt.Dimension(97, 67));
-        btnThoat.setMinimumSize(new java.awt.Dimension(97, 67));
-        btnThoat.setPreferredSize(new java.awt.Dimension(97, 67));
-        btnThoat.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnThoat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThoatActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnThoat);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -252,35 +257,57 @@ public class DashBoard extends javax.swing.JFrame {
     private void btnStatisticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStatisticActionPerformed
         // TODO add your handling code here:
         changeFrame(STATISTIC);
+        IStatistic frame = new IStatistic();
+        this.workPlace.removeAll();
+        this.workPlace.add(frame);
+        frame.setPreferredSize(this.workPlace.getPreferredSize());
+        frame.setVisible(true);
+        frame.setResizable(false);
     }//GEN-LAST:event_btnStatisticActionPerformed
 
     private void btnReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportActionPerformed
         // TODO add your handling code here:
-        changeFrame(REPORT);
+        //changeFrame(REPORT);
+        DChooseOptionReport dChooseOption = new DChooseOptionReport(null, true);
+        dChooseOption.setLocationRelativeTo(this);
+        dChooseOption.pack();
+        dChooseOption.setVisible(true);
     }//GEN-LAST:event_btnReportActionPerformed
 
     private void btnImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImportActionPerformed
         // TODO add your handling code here:
         DImport dImport = new DImport(this, true);
         dImport.setResizable(false);
-        dImport.setLocationRelativeTo(btnImport);
+        dImport.setLocationRelativeTo(this.workPlace);
         dImport.setVisible(true);
     }//GEN-LAST:event_btnImportActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
-       changeFrame(LOGOUT);
+        //changeFrame(LOGOUT);
+        MainFrame frame = new MainFrame();
+        frame.setVisible(true);
+        frame.setResizable(false);
+        this.setVisible(false);
     }//GEN-LAST:event_btnLogoutActionPerformed
 
-    private void btnThoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThoatActionPerformed
+    private void btnDiscountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDiscountActionPerformed
         // TODO add your handling code here:
-       
-    }//GEN-LAST:event_btnThoatActionPerformed
+        changeFrame(DISCOUNT);
+        IDiscount frame = new IDiscount();
+        this.workPlace.removeAll();
+        this.workPlace.add(frame);
+        frame.setPreferredSize(this.workPlace.getPreferredSize());
 
-    private void changeFrame(int index){
+        //frame.setUndecorated(true);
+        frame.setVisible(true);
+        frame.setResizable(false);
+    }//GEN-LAST:event_btnDiscountActionPerformed
+
+    private void changeFrame(int index) {
         this.listButton.get(index).setEnabled(false);
-        for(int i=0;i<listButton.size();i++){
-            if(i != index){
+        for (int i = 0; i < listButton.size(); i++) {
+            if (i != index) {
                 listButton.get(i).setEnabled(true);
             }
         }
@@ -288,12 +315,12 @@ public class DashBoard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDashboard;
+    private javax.swing.JButton btnDiscount;
     private javax.swing.JButton btnImport;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnReport;
     private javax.swing.JButton btnRepository;
     private javax.swing.JButton btnStatistic;
-    private javax.swing.JButton btnThoat;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JDesktopPane workPlace;
     // End of variables declaration//GEN-END:variables

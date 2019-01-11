@@ -12,7 +12,6 @@ import entities.Category;
 import entities.Inventory;
 import entities.Phone;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import javax.swing.JInternalFrame;
@@ -22,18 +21,21 @@ import javax.swing.JOptionPane;
  *
  * @author PHUC
  */
-public class DNewImport extends javax.swing.JDialog {
+public class DEditRepository extends javax.swing.JDialog {
     private IRepository inventoryFrame;
     private List<Category> categories;
     private DataComboBoxCategoryModel model;
+    private Inventory inventory;
     private int page;
     /**
      * Creates new form DNewImport
      */
-    public DNewImport(java.awt.Frame parent, boolean modal, IRepository frame, int page) {
+    public DEditRepository(java.awt.Frame parent, boolean modal, IRepository frame, Inventory inventory, int page) {
         super(parent, modal);
         this.inventoryFrame = frame;
+        this.inventory = inventory;
         this.page = page;
+                
         initComponents();
         init();
     }
@@ -42,9 +44,20 @@ public class DNewImport extends javax.swing.JDialog {
         categories = DatabaseAPI.getListCategory();
         model = new DataComboBoxCategoryModel(categories);
         this.cbbCategory.setModel(model);
-        this.txtDate.setValue(Calendar.getInstance().getTime().getDate());
-        this.txtMonth.setValue(Calendar.getInstance().getTime().getMonth() + 1);
-        this.txtYear.setValue(Calendar.getInstance().getTime().getYear() + 1900);
+        this.cbbCategory.setSelectedItem(this.inventory.getPhone().getCategory());
+        this.txtBC.setText(this.inventory.getPhone().getBackCam().toString());
+        this.txtCPU.setText(this.inventory.getPhone().getCpu());
+        this.txtCount.setText(this.inventory.getCount().toString());
+        this.txtDate.setValue(this.inventory.getDateImport().getDate());
+        this.txtMonth.setValue(this.inventory.getDateImport().getMonth() + 1);
+        this.txtYear.setValue(this.inventory.getDateImport().getYear() + 1900);
+        this.txtFC.setText(this.inventory.getPhone().getFrontCam().toString());
+        this.txtMem.setText(this.inventory.getPhone().getMemory().toString());
+        this.txtName.setText(this.inventory.getPhone().getName());
+        this.txtPIN.setText(this.inventory.getPhone().getPin().toString());
+        this.txtPrice.setText(this.inventory.getPhone().getPrice().toString());
+        this.txtRAM.setText(this.inventory.getPhone().getRam().toString());
+        this.txtScreenSize.setText(this.inventory.getPhone().getScreenSize());
     }
 
     /**
@@ -57,7 +70,7 @@ public class DNewImport extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
         txtName = new javax.swing.JTextField();
         txtScreenSize = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -91,10 +104,10 @@ public class DNewImport extends javax.swing.JDialog {
 
         jLabel1.setText("Tên");
 
-        btnAdd.setText("Thêm");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnEdit.setText("Sửa");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnEditActionPerformed(evt);
             }
         });
 
@@ -136,8 +149,9 @@ public class DNewImport extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnAdd))
+                        .addComponent(btnEdit))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel12)
                             .addComponent(jLabel1)
@@ -152,20 +166,19 @@ public class DNewImport extends javax.swing.JDialog {
                             .addComponent(jLabel10)
                             .addComponent(jLabel11))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtScreenSize, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtCPU, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtRAM, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtMem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtPIN, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtFC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtBC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(cbbCategory, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtName, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtScreenSize, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCPU, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtRAM, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtMem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPIN, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtFC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtBC, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPrice, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCount, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cbbCategory, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel13)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -185,7 +198,7 @@ public class DNewImport extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 16, Short.MAX_VALUE)
+                .addGap(0, 9, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbbCategory, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel12))
@@ -230,26 +243,26 @@ public class DNewImport extends javax.swing.JDialog {
                     .addComponent(jLabel10)
                     .addComponent(txtCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel13)
                         .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel14)
                         .addComponent(txtMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel15)
-                        .addComponent(txtYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnAdd)
+                        .addComponent(txtYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 18, 18)
+                .addComponent(btnEdit)
                 .addGap(7, 7, 7))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
-         String dateImportS = this.txtDate.getValue().toString() + "-" + this.txtMonth.getValue().toString() + "-" + this.txtYear.getValue().toString();
+        String dateImportS = this.txtDate.getValue().toString() + "-" + this.txtMonth.getValue().toString() + "-" + this.txtYear.getValue().toString();
         if (this.cbbCategory.getSelectedIndex() < 0 || txtName.getText().equals("") || txtPrice.getText().equals("") || txtCount.getText().equals("") || dateImportS.equals("")) {
             JOptionPane.showMessageDialog(this, "Điền đầy đủ thông tin!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
@@ -267,18 +280,21 @@ public class DNewImport extends javax.swing.JDialog {
                 int count = Integer.parseInt(txtCount.getText());
                 Date dateImport = CommonFunction.parseDate(dateImportS, "dd-MM-yyyy");
                 Phone phone = new Phone(category, name, sreenSize, CPU, RAM, memory, PIN, RAM, BC, price, null, null);
-                Inventory inventory = new Inventory(phone, count, dateImport);
-                boolean ok1 = DatabaseAPI.saveOrUpdatePhone(phone);
+                phone.setId(this.inventory.getPhone().getId());
+                this.inventory.setPhone(phone);
+                this.inventory.setDateImport(dateImport);
+                this.inventory.setCount(count);
+                boolean ok1 = DatabaseAPI.updatePhone(phone);
                 if(ok1 == false){
-                    JOptionPane.showMessageDialog(this, "Thêm hàng thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Sửa thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                boolean ok2 = DatabaseAPI.saveOrUpdateRepository(inventory);
+                boolean ok2 = DatabaseAPI.updateRepository(inventory);
                 if(ok2 == false){
-                    JOptionPane.showMessageDialog(this, "Thêm hàng thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Sửa thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
-                JOptionPane.showMessageDialog(this, "Thêm hàng thành công!", "Infomation", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Sửa thành công!", "Infomation", JOptionPane.INFORMATION_MESSAGE);
                 this.inventoryFrame.loadData(page);
                 this.setVisible(false);
             } catch (Exception e) {
@@ -286,14 +302,14 @@ public class DNewImport extends javax.swing.JDialog {
             }
 
         }
-    }//GEN-LAST:event_btnAddActionPerformed
+    }//GEN-LAST:event_btnEditActionPerformed
 
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JComboBox<String> cbbCategory;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;

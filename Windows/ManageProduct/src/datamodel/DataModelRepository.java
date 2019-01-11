@@ -16,7 +16,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class DataModelRepository extends AbstractTableModel {
 
-    private String[] header = new String[]{"Mã kho", "MÃ SẢN PHẨM", "TÊN", "MÀN HÌNH", "CPU", "RAM", "MEMORY", "PIN", "CAMERA TRƯỚC", "CAMERA SAU", "GIÁ", "SỐ LƯỢNG", "NGÀY NHẬP"};
+    private String[] header = new String[]{"MÃ KHO", "MÃ SẢN PHẨM", "TÊN", "MÀN HÌNH", "CPU", "RAM", "MEMORY", "PIN", "CAMERA TRƯỚC", "CAMERA SAU", "GIÁ", "SỐ LƯỢNG", "NGÀY NHẬP"};
     private List<Inventory> data;
 
     public DataModelRepository(List<Inventory> data) {

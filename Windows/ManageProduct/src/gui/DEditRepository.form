@@ -27,9 +27,10 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="32767" attributes="0"/>
-                      <Component id="btnAdd" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnEdit" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -45,21 +46,19 @@
                           <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="txtName" linkSize="1" alignment="1" min="-2" pref="283" max="-2" attributes="0"/>
-                              <Component id="txtScreenSize" linkSize="1" alignment="1" min="-2" pref="253" max="-2" attributes="0"/>
-                              <Component id="txtCPU" linkSize="1" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
-                              <Component id="txtRAM" linkSize="1" alignment="1" min="-2" pref="298" max="-2" attributes="0"/>
-                              <Component id="txtMem" linkSize="1" alignment="1" min="-2" pref="272" max="-2" attributes="0"/>
-                              <Component id="txtPIN" linkSize="1" alignment="1" min="-2" pref="303" max="-2" attributes="0"/>
-                              <Component id="txtFC" linkSize="1" alignment="1" min="-2" pref="254" max="-2" attributes="0"/>
-                              <Component id="txtBC" linkSize="1" alignment="1" min="-2" pref="253" max="-2" attributes="0"/>
-                              <Component id="txtPrice" linkSize="1" alignment="1" min="-2" pref="295" max="-2" attributes="0"/>
-                              <Component id="txtCount" linkSize="1" alignment="1" min="-2" pref="268" max="-2" attributes="0"/>
-                              <Component id="cbbCategory" alignment="1" min="-2" pref="303" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="1" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txtName" linkSize="1" alignment="1" min="-2" pref="283" max="-2" attributes="0"/>
+                          <Component id="txtScreenSize" linkSize="1" alignment="1" min="-2" pref="253" max="-2" attributes="0"/>
+                          <Component id="txtCPU" linkSize="1" alignment="1" min="-2" pref="290" max="-2" attributes="0"/>
+                          <Component id="txtRAM" linkSize="1" alignment="1" min="-2" pref="298" max="-2" attributes="0"/>
+                          <Component id="txtMem" linkSize="1" alignment="1" min="-2" pref="272" max="-2" attributes="0"/>
+                          <Component id="txtPIN" linkSize="1" alignment="1" min="-2" pref="303" max="-2" attributes="0"/>
+                          <Component id="txtFC" linkSize="1" alignment="1" min="-2" pref="254" max="-2" attributes="0"/>
+                          <Component id="txtBC" linkSize="1" alignment="1" min="-2" pref="253" max="-2" attributes="0"/>
+                          <Component id="txtPrice" linkSize="1" alignment="1" min="-2" pref="295" max="-2" attributes="0"/>
+                          <Component id="txtCount" linkSize="1" alignment="1" min="-2" pref="268" max="-2" attributes="0"/>
+                          <Component id="cbbCategory" alignment="1" min="-2" pref="303" max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
                               <Component id="jLabel13" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="txtDate" min="-2" pref="45" max="-2" attributes="0"/>
@@ -82,7 +81,7 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="0" pref="16" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="9" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cbbCategory" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -138,8 +137,9 @@
                   <Component id="txtCount" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="3" groupAlignment="3" attributes="0">
                       <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtDate" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -147,10 +147,9 @@
                       <Component id="jLabel15" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtYear" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jLabel11" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnAdd" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+              <Component id="btnEdit" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -162,12 +161,12 @@
         <Property name="text" type="java.lang.String" value="T&#xea;n"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnAdd">
+    <Component class="javax.swing.JButton" name="btnEdit">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Th&#xea;m"/>
+        <Property name="text" type="java.lang.String" value="S&#x1eed;a"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="txtName">

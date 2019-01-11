@@ -17,15 +17,42 @@ import javax.persistence.Table;
          catalog = "WINDOWS"
 )
 public class Account implements java.io.Serializable {
+    
+    private static Account account = null;
 
     @Id
-    @Column(name = "USERNAME", unique = true, nullable = false, length = 20)
+    @Column(name = "USERNAME", unique = true, nullable = false)
     private String username;
-    @Column(name = "PASSWORD", length = 100)
+    @Column(name = "PASSWORD")
     private String password;
+    @Column(name = "ISADMIN")
+    private boolean isAdmin;
 
     public Account() {
     }
+
+    public Account(String username, String password, boolean isAdmin) {
+        this.username = username;
+        this.password = password;
+        this.isAdmin = isAdmin;
+    }
+    
+    public static Account getInstance(){
+        if(account == null){
+            account = new Account();
+        }
+        return account;
+    }
+
+    public boolean isIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+    
+    
 
     public Account(String username) {
         this.username = username;

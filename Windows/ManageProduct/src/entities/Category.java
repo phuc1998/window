@@ -3,6 +3,7 @@ package entities;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -70,5 +71,33 @@ public class Category implements java.io.Serializable {
     public void setPhones(Set<Phone> phones) {
         this.phones = phones;
     }
+
+    @Override
+    public int hashCode() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Category other = (Category) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        if (!Objects.equals(this.manufacturer, other.manufacturer)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 
 }

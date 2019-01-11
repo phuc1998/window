@@ -5,17 +5,60 @@
  */
 package gui;
 
+import charts.ChartBestSell;
+import dao.DatabaseAPI;
+import datamodel.DataComboBoxStringModel;
+import datamodel.DataModelStatistic;
+import entities.Bill;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
+
 /**
  *
  * @author PHUC
  */
 public class IStatistic extends javax.swing.JInternalFrame {
 
+    private List<Bill> bills = new ArrayList<>();
+    private DataModelStatistic modelStatistic;
+    private DataComboBoxStringModel model;
+    private List<String> statistics;
+    private int page = 0;
+
     /**
      * Creates new form IStatistic
      */
     public IStatistic() {
         initComponents();
+        init();
+        loadData(page);
+    }
+
+    private void init() {
+        SpinnerModel model = new SpinnerNumberModel(1, 1, 100, 1);
+        this.txtPage.setModel(model);
+        this.btnDelete.setEnabled(false);
+        this.statistics = new ArrayList<>();
+        this.statistics.add("Thống kê theo sản phẩm bán chạy");
+        this.statistics.add("Thống kê theo doanh thu");
+        this.model = new DataComboBoxStringModel(statistics);
+        this.cbbStatistic.setModel(this.model);
+        this.btnChangeStatus.setEnabled(false);
+        this.tblBill.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.getRootPane().setDefaultButton(this.btnSearch);
+    }
+
+    public void loadData(int page) {
+        bills = DatabaseAPI.getListBills(page, 50);
+        this.modelStatistic = new DataModelStatistic(bills);
+        this.tblBill.setModel(modelStatistic);
+        this.modelStatistic.fireTableDataChanged();
+        this.btnDelete.setEnabled(false);
+        this.btnChangeStatus.setEnabled(false);
     }
 
     /**
@@ -27,21 +70,208 @@ public class IStatistic extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        btnDelete = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblBill = new javax.swing.JTable();
+        cbbStatistic = new javax.swing.JComboBox<>();
+        txtPage = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        btnChangeStatus = new javax.swing.JButton();
+
+        btnDelete.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btnDelete.setForeground(new java.awt.Color(255, 0, 0));
+        btnDelete.setText("Xóa");
+        btnDelete.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
+
+        txtSearch.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+
+        btnSearch.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btnSearch.setText("Tìm kiếm");
+        btnSearch.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+
+        tblBill.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        tblBill.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblBill.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBillMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblBill);
+
+        cbbStatistic.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        cbbStatistic.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbbStatistic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cbbStatistic.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cbbStatisticItemStateChanged(evt);
+            }
+        });
+
+        txtPage.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        txtPage.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                txtPageStateChanged(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        jLabel1.setText("Trang");
+
+        btnChangeStatus.setFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
+        btnChangeStatus.setText("Cập nhật trạng thái");
+        btnChangeStatus.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnChangeStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnChangeStatusActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDelete)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnChangeStatus)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbbStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 139, Short.MAX_VALUE)
+                .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(btnSearch)
+                .addContainerGap())
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDelete)
+                    .addComponent(txtSearch, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSearch)
+                    .addComponent(cbbStatistic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(btnChangeStatus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tblBillMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBillMouseClicked
+        // TODO add your handling code here:
+        this.btnDelete.setEnabled(true);
+        this.btnChangeStatus.setEnabled(true);
+    }//GEN-LAST:event_tblBillMouseClicked
+
+    private void txtPageStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_txtPageStateChanged
+        // TODO add your handling code here:
+        try {
+            page = (int) this.txtPage.getValue() - 1;
+            loadData(page);
+        } catch (Exception e) {
+
+        }
+    }//GEN-LAST:event_txtPageStateChanged
+
+    private void btnChangeStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChangeStatusActionPerformed
+        // TODO add your handling code here:
+        Bill bill = this.bills.get(this.tblBill.getSelectedRow());
+        DChangeStatus dChangeStatus = new DChangeStatus(null, true, this, bill, page);
+        dChangeStatus.setLocationRelativeTo(this);
+        dChangeStatus.setResizable(false);
+        dChangeStatus.setTitle("Đổi trạng thái");
+        dChangeStatus.setVisible(true);
+    }//GEN-LAST:event_btnChangeStatusActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        // TODO add your handling code here:
+        String search = this.txtSearch.getText();
+        if (!search.equals("")) {
+            bills.clear();
+            bills.addAll(DatabaseAPI.searchBill(search));
+            this.modelStatistic.fireTableDataChanged();
+            this.btnChangeStatus.setEnabled(false);
+            this.btnDelete.setEnabled(false);
+        }
+    }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        // TODO add your handling code here:
+        Bill bill = this.bills.get(this.tblBill.getSelectedRow());
+        int ok = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa hóa đơn này?", "Warning", JOptionPane.YES_NO_OPTION);
+        if (ok == JOptionPane.YES_OPTION) {
+            boolean ss = DatabaseAPI.deleteBill(bill);
+            if (ss) {
+                JOptionPane.showMessageDialog(this, "Xóa hóa đơn thành công!", "Information", JOptionPane.INFORMATION_MESSAGE);
+                this.loadData(page);
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa hóa đơn thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void cbbStatisticItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cbbStatisticItemStateChanged
+        // TODO add your handling code here:
+        int index = this.cbbStatistic.getSelectedIndex();
+        DChooseOption dChooseOption = new DChooseOption(null, true);
+        dChooseOption.setLocationRelativeTo(this);
+        dChooseOption.pack();
+        switch (index) {
+            case 0:
+                dChooseOption.setOption(0);
+                break;
+            case 1:
+                dChooseOption.setOption(1);
+                break;
+            default:
+                break;
+        }
+        dChooseOption.setVisible(true);
+    }//GEN-LAST:event_cbbStatisticItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnChangeStatus;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JComboBox<String> cbbStatistic;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblBill;
+    private javax.swing.JSpinner txtPage;
+    private javax.swing.JTextField txtSearch;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -25,10 +25,9 @@ import org.hibernate.annotations.GenericGenerator;
          catalog = "WINDOWS"
 )
 public class Bill implements java.io.Serializable {
-
     @Id
-    @GenericGenerator(name = "i2", strategy = "common.BILLID")
-    @GeneratedValue(generator = "i2")
+//    @GenericGenerator(name = "generateIDBill", strategy = "common.BILLID")
+//    @GeneratedValue(generator = "generateIDBill")
     @Column(name = "ID", unique = true, nullable = false, length = 15)
     private String id;
     @ManyToOne(fetch = FetchType.EAGER)

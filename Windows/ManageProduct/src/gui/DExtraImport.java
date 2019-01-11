@@ -5,6 +5,7 @@
  */
 package gui;
 
+import common.CommonFunction;
 import dao.DatabaseAPI;
 import entities.Inventory;
 import java.text.SimpleDateFormat;
@@ -19,13 +20,15 @@ public class DExtraImport extends javax.swing.JDialog {
 
     private IRepository repository;
     private Inventory inventory;
+    private int page;
     /**
      * Creates new form DExtraImport
      */
-    public DExtraImport(java.awt.Frame parent, boolean modal, IRepository repository, Inventory inventory) {
+    public DExtraImport(java.awt.Frame parent, boolean modal, IRepository repository, Inventory inventory, int page) {
         super(parent, modal);
         this.repository = repository;
         this.inventory = inventory;
+        this.page = page;
         initComponents();
         init();
     }
@@ -36,6 +39,9 @@ public class DExtraImport extends javax.swing.JDialog {
         this.txtName.setText(this.inventory.getPhone().getName());
         this.txtIDRepository.setEditable(false);
         this.txtName.setEditable(false);
+        this.txtDate.setValue(this.inventory.getDateImport().getDate());
+        this.txtMonth.setValue(this.inventory.getDateImport().getMonth() + 1);
+        this.txtYear.setValue(this.inventory.getDateImport().getYear() + 1900);
     }
 
     /**
@@ -53,9 +59,14 @@ public class DExtraImport extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         txtCount = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        txtDateImport = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         btnImport = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        txtDate = new javax.swing.JSpinner();
+        jLabel6 = new javax.swing.JLabel();
+        txtMonth = new javax.swing.JSpinner();
+        jLabel7 = new javax.swing.JLabel();
+        txtYear = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -74,6 +85,12 @@ public class DExtraImport extends javax.swing.JDialog {
             }
         });
 
+        jLabel5.setText("Ngày");
+
+        jLabel6.setText("Tháng");
+
+        jLabel7.setText("Năm");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -87,13 +104,25 @@ public class DExtraImport extends javax.swing.JDialog {
                     .addComponent(jLabel4))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtDateImport, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(txtCount, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
-                    .addComponent(txtIDRepository))
+                    .addComponent(txtCount)
+                    .addComponent(txtName)
+                    .addComponent(txtIDRepository)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtMonth, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel7)
+                        .addGap(8, 8, 8)
+                        .addComponent(txtYear, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(344, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnImport)
                 .addGap(10, 10, 10))
         );
@@ -115,7 +144,12 @@ public class DExtraImport extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtDateImport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel5)
+                    .addComponent(txtDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(txtMonth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7)
+                    .addComponent(txtYear, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(btnImport)
                 .addContainerGap())
@@ -128,15 +162,19 @@ public class DExtraImport extends javax.swing.JDialog {
         // TODO add your handling code here:
         try{
             int count = Integer.parseInt(this.txtCount.getText());
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            Date date = format.parse(this.txtDateImport.getText());
+            if(count < 0){
+                JOptionPane.showMessageDialog(this, "Số lượng phải lớn hơn 0!", "Warning", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            String dateImport = this.txtDate.getValue().toString() + "-" + this.txtMonth.getValue().toString() + "-" + this.txtYear.getValue().toString();
+            Date date = CommonFunction.parseDate(dateImport, "dd-MM-yyyy");
             this.inventory.setCount(count + this.inventory.getCount());
             this.inventory.setDateImport(date);
             boolean ok = DatabaseAPI.saveOrUpdateRepository(inventory);
             if(ok){
                 JOptionPane.showMessageDialog(this, "Nhập hàng thành công!", "Thông tin", JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
-                this.repository.loadData();
+                this.repository.loadData(page);
             }else{
                 JOptionPane.showMessageDialog(this, "Nhập hàng thất bại!", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -154,9 +192,14 @@ public class DExtraImport extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JTextField txtCount;
-    private javax.swing.JTextField txtDateImport;
+    private javax.swing.JSpinner txtDate;
     private javax.swing.JTextField txtIDRepository;
+    private javax.swing.JSpinner txtMonth;
     private javax.swing.JTextField txtName;
+    private javax.swing.JSpinner txtYear;
     // End of variables declaration//GEN-END:variables
 }
